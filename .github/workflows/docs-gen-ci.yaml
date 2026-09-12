@@ -1,7 +1,20 @@
 
 name: Create specific-size Docs
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
+    inputs:
+      paper_layout:
+        description: 'Select PDF Output Dimensions'
+        required: true
+        default: 'letter'
+        type: choice
+        options:
+          - 'letter'
+          - 'letter-landscape'
+          - 'tabloid'
+          - 'tabloid-landscape'
+        
+        
 
 jobs:
   build-docs:
@@ -18,6 +31,19 @@ jobs:
 
       - name: Compile documentation
         run: |
+          if [ "${{ github.event.inputs.paper_layout }}" = "letter-landscape" ]; then
+            export TYPST_INPUTS='{"paper": "us-letter", "flipped": true}'
+          fi
+          if [ "${{ github.event.inputs.paper_layout }}" = "letter" ]; then
+            export TYPST_INPUTS='{"paper": "us-letter", "flipped": false}'
+          fi
+          if [ "${{ github.event.inputs.paper_layout }}" = "tabloid-landscape" ]; then
+            export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": true}'
+          fi
+          if [ "${{ github.event.inputs.paper_layout }}" = "tabloid" ]; then
+            export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": false}'
+          fi
+          
           TYPST_INPUTS='{"paper": "us-letter"}' cargo docit compile --format pdf --release
 
       - name: Rename documentation file
