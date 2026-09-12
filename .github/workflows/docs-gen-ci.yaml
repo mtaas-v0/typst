@@ -43,6 +43,7 @@ jobs:
           if [ "${{ github.event.inputs.paper_layout }}" = "tabloid" ]; then
             export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": false}'
           fi
+          cargo docit help compile
           
           cargo docit compile --format pdf --release
 
