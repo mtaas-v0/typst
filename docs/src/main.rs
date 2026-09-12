@@ -68,7 +68,7 @@ fn compile(command: &CompileCommand) -> ExitCode {
     // 4. Attach the inputs dictionary directly to the world's library context
     // Note: Depending on your custom `DocWorld` implementation, you might need to
     // expose a setter or modify your world's library instantiation directly.
-    world.library_mut().inputs = inputFields;
+    world.library().inputs = inputFields; //library_mut?
     
     let report = timer
         .record(&mut world, |world| compile_once(world, &mut config))
