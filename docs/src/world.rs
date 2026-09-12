@@ -84,6 +84,12 @@ impl DocWorld {
         self.files.reset();
         self.now.reset();
     }
+
+    /// Explicitly update inputs from your application code
+    fn update_inputs(&mut self, new_inputs: Dict) {
+        let library = Library::builder().with_inputs(new_inputs).build();
+        self.library = LazyHash::new(library);
+    }
 }
 
 impl World for DocWorld {
