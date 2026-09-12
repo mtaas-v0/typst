@@ -24,7 +24,12 @@
 ) = {
   // Check if an input called "paper" exists; default to "us-tabloid"
   let paper-size = sys.inputs.at("paper", default: "us-tabloid")
-  set page(paper: paper-size)
+  let is-flipped = sys.inputs.at("flipped", default: "false") == "true"
+  set page(
+    paper: paper-size,
+    flipped: is-flipped,
+  )
+
 
   assert(content-base.starts-with("/") and content-base.ends-with("/"))
   assert(asset-base.starts-with("/") and asset-base.ends-with("/"))
