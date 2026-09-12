@@ -24,6 +24,7 @@ use typst_layout::PagedDocument;
 use typst_pdf::PdfOptions;
 
 use typst::foundations::{Dict, Value}; // or typst::eval depending on your typst crate version
+use typst::World;
 
 use crate::args::{
     CliArguments, Command, CompileArgs, CompileCommand, OutputFormat, WatchCommand,
@@ -52,7 +53,7 @@ fn main() -> ExitCode {
 
 /// Execute a compilation command.
 fn compile(command: &CompileCommand) -> ExitCode {
-    /// 1. Create a dictionary to hold the command-line inputs
+    // 1. Create a dictionary to hold the command-line inputs
     let mut inputFields = Dict::new();
 
     // 2. Parse and insert your --input arguments from your command flags
