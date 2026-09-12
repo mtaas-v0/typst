@@ -60,7 +60,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           # Formats output as: resvg-windows-20260909-b42
-          name: typst-${{ matrix.target }}-${{ steps.date.outputs.stamp }}-b${{ github.run_number }}
+          name: typst-${{ github.event.inputs.paper_layout }}-${{ steps.date.outputs.stamp }}-b${{ github.run_number }}
           path: typst-documentation.pdf
           if-no-files-found: error
           retention-days: 14
