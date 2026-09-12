@@ -1,0 +1,41 @@
+
+name: Create specific-size Docs
+on:
+  workflow_dispatch: 
+
+jobs:
+  build-docs:
+    name: Build documentation (PDF)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@f8be11a05b1d4f3fcebe6410cc16743212b999b0 # 1.98.0
+
+      - name: Compile documentation
+        run: |
+          TYPST_INPUTS='{"paper": "us-letter"}' cargo docit compile --format pdf --release
+
+      - name: Rename documentation file
+        run: mv docs/dist/docs.pdf typst-documentation.pdf
+        
+      - name: Generate Datestamp
+        id: date
+        shell: bash
+        run: |
+          # Generates a stamp like YYYYMMDD
+          echo "stamp=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+  
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Formats output as: resvg-windows-20260909-b42
+          name: typst-${{ matrix.target }}-${{ steps.date.outputs.stamp }}-b${{ github.run_number }}
+          path: typst-documentation.pdf
+          if-no-files-found: error
+          retention-days: 14
+          
