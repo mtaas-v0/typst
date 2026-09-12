@@ -54,12 +54,12 @@ fn main() -> ExitCode {
 /// Execute a compilation command.
 fn compile(command: &CompileCommand) -> ExitCode {
     // 1. Create a dictionary to hold the command-line inputs
-    let mut inputFields = Dict::new();
+    let mut input_fields = Dict::new();
 
     // 2. Parse and insert your --input arguments from your command flags
     // Example: If command.args.inputs is a Vec<(String, String)> or HashMap<String, String>
-    for (key, val) in &command.args.inputField {
-        inputFields.insert(key.clone().into(), Value::Str(val.clone().into()));
+    for (key, val) in &command.args.input_field {
+        input_fields.insert(key.clone().into(), Value::Str(val.clone().into()));
     }
     
     let mut timer = Timer::new_or_placeholder(command.args.timings.clone());
@@ -69,7 +69,7 @@ fn compile(command: &CompileCommand) -> ExitCode {
     // 4. Attach the inputs dictionary directly to the world's library context
     // Note: Depending on your custom `DocWorld` implementation, you might need to
     // expose a setter or modify your world's library instantiation directly.
-    world.update_inputs(inputFields); 
+    world.update_inputs(input_fields); 
     
     let report = timer
         .record(&mut world, |world| compile_once(world, &mut config))
