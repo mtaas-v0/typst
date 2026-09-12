@@ -22,6 +22,10 @@
   // Dictionary of external insertions that the chapters can use if present.
   insertions: (:),
 ) = {
+  // Check if an input called "paper" exists; default to "us-tabloid"
+  let paper-size = sys.inputs.at("paper", default: "us-tabloid")
+  set page(paper: paper-size)
+
   assert(content-base.starts-with("/") and content-base.ends-with("/"))
   assert(asset-base.starts-with("/") and asset-base.ends-with("/"))
 
