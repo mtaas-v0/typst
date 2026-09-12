@@ -3,8 +3,7 @@
 
 name: Create Release Assets
 on:
-  release:
-    types: [published]
+  workflow_dispatch: 
 
 jobs:
   build-binaries:
@@ -80,14 +79,22 @@ jobs:
             tar cJf "$ARCHIVE" "$ARCHIVE_DIR"
           fi
           echo "ARCHIVE=$ARCHIVE" >> "$GITHUB_ENV"
-
-      - name: Upload asset
+  
+      - name: Generate Datestamp
+        id: date
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION="${{ github.ref_name }}"
-          gh release upload "$VERSION" "$ARCHIVE"
+          # Generates a stamp like YYYYMMDD
+          echo "stamp=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+  
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Formats output as: resvg-windows-20260909-b42
+          name: typst-${{ matrix.target }}-${{ steps.date.outputs.stamp }}-b${{ github.run_number }}
+          path: ${{ env.ARCHIVE }}
+          if-no-files-found: error
+          retention-days: 14
 
   build-docs:
     name: Build documentation (PDF)
@@ -106,11 +113,20 @@ jobs:
 
       - name: Rename documentation file
         run: mv docs/dist/docs.pdf typst-documentation.pdf
-
-      - name: Upload asset
+        
+      - name: Generate Datestamp
+        id: date
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION="${{ github.ref_name }}"
-          gh release upload "$VERSION" typst-documentation.pdf
+          # Generates a stamp like YYYYMMDD
+          echo "stamp=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
+  
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # Formats output as: resvg-windows-20260909-b42
+          name: typst-${{ matrix.target }}-${{ steps.date.outputs.stamp }}-b${{ github.run_number }}
+          path: typst-documentation.pdf
+          if-no-files-found: error
+          retention-days: 14
+          
