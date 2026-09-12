@@ -83,8 +83,9 @@ pub struct CompileArgs {
     /// Open the generated output when finished.
     #[arg(long)]
     pub open: bool,
-    #[arg(short, long)]
-    input: String, // Or PathBuf if it's a file path
+    
+    #[arg(short, long, value_parser = parse_key_val)]
+    pub inputField: Vec<(String, String)>,
 }
 
 /// Which kind of output to generate.
