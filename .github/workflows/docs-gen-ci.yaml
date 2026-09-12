@@ -44,7 +44,7 @@ jobs:
             export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": false}'
           fi
           
-          TYPST_INPUTS='{"paper": "us-letter"}' cargo docit compile --format pdf --release
+          cargo docit compile --format pdf --release
 
       - name: Rename documentation file
         run: mv docs/dist/docs.pdf typst-documentation.pdf
