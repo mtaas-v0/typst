@@ -85,7 +85,7 @@ pub struct CompileArgs {
     pub open: bool,
     
     #[arg(short, long, value_parser = parse_key_val)]
-    pub inputField: Vec<(String, String)>,
+    pub input_fields: Vec<(String, String)>,
 }
 
 /// Helper function to split "key=value" strings
