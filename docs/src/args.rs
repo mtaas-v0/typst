@@ -83,6 +83,8 @@ pub struct CompileArgs {
     /// Open the generated output when finished.
     #[arg(long)]
     pub open: bool,
+    #[arg(short, long)]
+    input: String, // Or PathBuf if it's a file path
 }
 
 /// Which kind of output to generate.
