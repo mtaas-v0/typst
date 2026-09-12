@@ -23,6 +23,8 @@ use typst_kit::watcher::Watcher;
 use typst_layout::PagedDocument;
 use typst_pdf::PdfOptions;
 
+use typst::foundations::{Dict, Value}; // or typst::eval depending on your typst crate version
+
 use crate::args::{
     CliArguments, Command, CompileArgs, CompileCommand, OutputFormat, WatchCommand,
 };
@@ -50,9 +52,24 @@ fn main() -> ExitCode {
 
 /// Execute a compilation command.
 fn compile(command: &CompileCommand) -> ExitCode {
+    /// 1. Create a dictionary to hold the command-line inputs
+    let mut inputFields = Dict::new();
+
+    // 2. Parse and insert your --input arguments from your command flags
+    // Example: If command.args.inputs is a Vec<(String, String)> or HashMap<String, String>
+    for (key, val) in &command.args.inputField {
+        inputFields.insert(key.clone().into(), Value::Str(val.clone().into()));
+    }
+    
     let mut timer = Timer::new_or_placeholder(command.args.timings.clone());
     let mut config = Config::new(&command.args, false);
     let mut world = DocWorld::new(&config);
+
+    // 4. Attach the inputs dictionary directly to the world's library context
+    // Note: Depending on your custom `DocWorld` implementation, you might need to
+    // expose a setter or modify your world's library instantiation directly.
+    world.library_mut().inputs = inputFields;
+    
     let report = timer
         .record(&mut world, |world| compile_once(world, &mut config))
         .unwrap();
