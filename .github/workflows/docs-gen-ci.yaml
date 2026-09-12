@@ -32,20 +32,20 @@ jobs:
       - name: Compile documentation
         run: |
           if [ "${{ github.event.inputs.paper_layout }}" = "letter-landscape" ]; then
-            export TYPST_INPUTS='{"paper": "us-letter", "flipped": true}'
+            prefill_args=(--input paper="us-letter" --input flipped="true")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "letter" ]; then
-            export TYPST_INPUTS='{"paper": "us-letter", "flipped": false}'
+            prefill_args=(--input paper="us-letter" --input flipped="false")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "tabloid-landscape" ]; then
-            export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": true}'
+            prefill_args=(--input paper="us-tabloid" --input flipped="true")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "tabloid" ]; then
-            export TYPST_INPUTS='{"paper": "us-tabloid", "flipped": false}'
+            prefill_args=(--input paper="us-tabloid" --input flipped="false")
           fi
-          cargo docit help compile
+          echo cargo run --profile dev-fast --package=typst-docs -- compile --format pdf --release "${prefill_args[@]}"
+          cargo run --profile dev-fast --package=typst-docs -- compile --format pdf --release "${prefill_args[@]}"
           
-          cargo docit compile --format pdf --release
 
       - name: Rename documentation file
         run: mv docs/dist/docs.pdf typst-documentation.pdf
