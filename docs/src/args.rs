@@ -88,6 +88,13 @@ pub struct CompileArgs {
     pub inputField: Vec<(String, String)>,
 }
 
+/// Helper function to split "key=value" strings
+fn parse_key_val(s: &str) -> Result<(String, String), String> {
+    s.split_once('=')
+        .map(|(k, v)| (k.to_string(), v.to_string()))
+        .ok_or_else(|| format!("invalid key=value pair: no '=' found in '{s}'"))
+}
+
 /// Which kind of output to generate.
 #[derive(Debug, Default, Copy, Clone, Eq, PartialEq, ValueEnum)]
 pub enum OutputFormat {
