@@ -32,19 +32,19 @@ jobs:
       - name: Compile documentation
         run: |
           if [ "${{ github.event.inputs.paper_layout }}" = "letter-landscape" ]; then
-            prefill_args=(--input paper="us-letter" --input flipped="true")
+            prefill_args=(--input-field paper="us-letter" --input-field flipped="true")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "letter" ]; then
-            prefill_args=(--input paper="us-letter" --input flipped="false")
+            prefill_args=(--input-field paper="us-letter" --input-field flipped="false")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "tabloid-landscape" ]; then
-            prefill_args=(--input paper="us-tabloid" --input flipped="true")
+            prefill_args=(--input-field paper="us-tabloid" --input-field flipped="true")
           fi
           if [ "${{ github.event.inputs.paper_layout }}" = "tabloid" ]; then
-            prefill_args=(--input paper="us-tabloid" --input flipped="false")
+            prefill_args=(--input-field paper="us-tabloid" --input-field flipped="false")
           fi
           echo cargo run --profile dev-fast --package=typst-docs -- compile --format pdf --release "${prefill_args[@]}"
-          cargo run --profile dev-fast --package=typst-docs -- compile --format pdf --release -- "${prefill_args[@]}"
+          cargo run --profile dev-fast --package=typst-docs -- compile --format pdf --release "${prefill_args[@]}"
           
 
       - name: Rename documentation file
