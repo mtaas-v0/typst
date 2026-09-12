@@ -60,6 +60,8 @@ pub struct DocWorld {
     files: FileStore<DocsFiles>,
     /// The current datetime if requested.
     now: Time,
+    /// is_dev_version bool
+    is_dev_version: bool,
 }
 
 impl DocWorld {
@@ -70,6 +72,7 @@ impl DocWorld {
             library: LazyHash::new(library(config.is_dev_version)),
             files: FileStore::new(DocsFiles::new(config.input.as_deref())),
             now: Time::system(),
+            is_dev_version: config.is_dev_version
         }
     }
 
@@ -86,9 +89,25 @@ impl DocWorld {
     }
 
     /// Explicitly update inputs from your application code
-    fn update_inputs(&mut self, new_inputs: Dict) {
-        let library = Library::builder().with_inputs(new_inputs).build();
-        self.library = LazyHash::new(library);
+    pub fn update_inputs(&mut self, new_inputs: Dict) {
+        // copy of library(...)
+        let mut lib = Library::builder([
+            typst_html::FORMAT,
+            typst_pdf::FORMAT,
+            typst_svg::FORMAT,
+            typst_render::FORMAT,
+            typst_bundle::FORMAT,
+        ])
+        .with_inputs(new_inputs)
+        .with_features(Features::all())
+        .build();
+        let scope = lib.global.scope_mut();
+        scope.define("stdx", stdx_module(self.is_dev_version));
+        lib.rules.replace(Target::Html, PATCHED_LINK_RULE);
+        lib.rules.replace(Target::Html, PATCHED_IMAGE_RULE);
+        lib.rules.register(Target::Paged, FRAME_RULE);
+        
+        self.library = LazyHash::new(lib);
     }
 }
 
